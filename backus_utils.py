@@ -59,8 +59,16 @@ def get_valid_selection(path_to_confs, channel):
     filenames = os.listdir(path_to_confs)
     valid_names = []
     
+    if channel in ["spp_0", "spp_i", "sxx_0", "sxx_i"]:
+        prefix = "s"
+    elif channel in ["pp_A", "pp_0", "pp_i", "pp_ij",
+                     "xx_A", "xx_0", "xx_i", "xx_ij"]:
+        prefix = "p"
+    else:
+        raise Exception("Unknown channel.")
+    
     for name in filenames:
-        if name.startswith(f"{channel[0]}onia"):
+        if name.startswith(f"{prefix}onia"):
             valid_names.append(name)
             
     return valid_names
@@ -85,7 +93,7 @@ def get_sample(path_to_confs, channel, n_samples, Nt, t1=0, t2='Nt', return_samp
     if n_samples == -1: # Select all valid configs
         choices = valid_names
     else:
-        choices = np.random.choice(valid_names, n_samples)
+        choices = np.random.choice(valid_names, n_samples, replace=True)
     
     # Collect samples
     samples = []
